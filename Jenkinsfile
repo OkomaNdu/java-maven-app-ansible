@@ -2,22 +2,23 @@ pipeline {
     agent any
     environment {
         ANSIBLE_SERVER = "68.183.193.73"
+    }
     stages {
         stage("Copy files to ansible server") {
             steps {
                 script {
                     echo "copying all neccessary files to ansible control node"
                     sshagent(['ansible-server-key']) {
-                        sh "scp -o StrictHostKeyChecking=no ansible/* root@{ANSIBLE_SERVER}:/root"
+                        sh "scp -o StrictHostKeyChecking=no ansible/* root@${ANSIBLE_SERVER}:/root"
 
                         withCredentials([sshUserPrivateKey(credentialsId: 'ec2-server-key-ansible', keyFileVariable: 'keyfile', usernameVariable: 'user')]) {
-                            sh 'scp $keyfile root@ANSIBLE_SERVER:/root/ssh-key.pem'
+                            sh "scp \$keyfile root@${ANSIBLE_SERVER}:/root/ssh-key.pem"
                         }
                     }
                 }
             }
         }
-        stage ("execute ansible playbook") {
+        stage("execute ansible playbook") {
             steps {
                 script {
                     echo "calling ansible playbook to configure ec2 instances"
@@ -32,6 +33,6 @@ pipeline {
                     }
                 }
             }
-        }           
+        }
     }
 }
