@@ -28,5 +28,8 @@ pipeline {
                         remote.identityFile = keyfile
                         sshCommand remote: remote, command: "ls -l"
                     }
+                }
+            }
+        }           
     }
 }
