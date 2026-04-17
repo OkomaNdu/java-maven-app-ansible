@@ -15,7 +15,6 @@
 - name: Install Docker-compose
   hosts: all
   become: yes
-  become_user: ndu
   tasks:
     - name: Create docker-compose directory
       file:
@@ -26,6 +25,6 @@
       register: remote_arch
     - name: Install docker-compose
       get_url: 
-        url: " https://github.com/docker/compose/releases/latest/download/docker-compose-linux-{{ remote_arch.stdout }}"
+        url: "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-{{ remote_arch.stdout }}"
         dest: ~/.docker/cli-plugins/docker-compose
         mode: +x
