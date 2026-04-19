@@ -44,43 +44,31 @@ The `prepare-ansible-server.sh` script means the DigitalOcean Droplet requires *
 
 ## Architecture Overview
 
-```
-                    Automate Infrastructure Setup using Jenkins and Ansible
-                    ════════════════════════════════════════════════════════
+```mermaid
+flowchart TD
+    A("👥 DevOps Team")
+    B("🐙 GitHub Repository\nOkomaNdu/java-maven-app-ansible")
+    C("🔧 Jenkins Server\nCI/CD Engine · ansible-pipeline")
+    D("🌊 DigitalOcean Droplet\nAnsible Control Node · Ubuntu 24.04 LTS")
+    E("☁️ AWS — ca-central-1")
+    F("🖥️ EC2 Instance 1\n✔ Docker installed\n✔ Docker Compose installed")
+    G("🖥️ EC2 Instance 2\n✔ Docker installed\n✔ Docker Compose installed")
 
-  ┌─────────────┐    push code     ┌──────────────┐    SCM trigger    ┌─────────────────────┐
-  │  DevOps     │ ───────────────► │    GitHub    │ ────────────────► │   Jenkins Server    │
-  │  Team       │                  │  Repository  │                   │   (CI/CD Engine)    │
-  └─────────────┘                  └──────────────┘   build status    └──────────┬──────────┘
-         ▲                                                ◄────────────────────────┘
-         │                                                         │
-         │  notification                              Stage 1: SCP ansible files
-         └────────────────────────────────────────────    + EC2 SSH key
-                                                                   │
-                                                                   ▼
-                                                    ┌──────────────────────────────┐
-                                                    │     DigitalOcean Droplet     │
-                                                    │    (Ansible Control Node)    │
-                                                    │                              │
-                                                    │  Stage 2: ansible-playbook   │
-                                                    │  + Dynamic EC2 Inventory     │
-                                                    └──────────────┬───────────────┘
-                                                                   │
-                                               ┌───────────────────┴───────────────────┐
-                                               │   AWS (ca-central-1)                  │
-                                               │                                       │
-                                               │   ┌───────────────────────────────┐   │
-                                               │   │  EC2 Instance 1               │   │
-                                               │   │  ✔ Docker installed           │   │
-                                               │   │  ✔ Docker Compose installed   │   │
-                                               │   └───────────────────────────────┘   │
-                                               │                                       │
-                                               │   ┌───────────────────────────────┐   │
-                                               │   │  EC2 Instance 2               │   │
-                                               │   │  ✔ Docker installed           │   │
-                                               │   │  ✔ Docker Compose installed   │   │
-                                               │   └───────────────────────────────┘   │
-                                               └───────────────────────────────────────┘
+    A -->|"push code"| B
+    B -->|"SCM trigger"| C
+    C -->|"build status"| A
+    C -->|"Stage 1: SCP ansible files + EC2 SSH key"| D
+    D -->|"Stage 2: ansible-playbook + dynamic inventory"| E
+    E --> F
+    E --> G
+
+    style A fill:#4A90D9,stroke:#2171B5,color:#fff,rx:8
+    style B fill:#24292E,stroke:#555,color:#fff,rx:8
+    style C fill:#CC3333,stroke:#991111,color:#fff,rx:8
+    style D fill:#0069FF,stroke:#0050CC,color:#fff,rx:8
+    style E fill:#FF9900,stroke:#CC7700,color:#000,rx:8
+    style F fill:#2D8653,stroke:#1A5C38,color:#fff,rx:8
+    style G fill:#2D8653,stroke:#1A5C38,color:#fff,rx:8
 ```
 
 ---
